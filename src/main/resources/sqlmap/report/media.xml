@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ec-ga-media">
+	<typeAlias alias="medai" type="com.j1.ec.report.entity.Media" />
+
+	<resultMap class="medai" id="mediaResult">
+		<result property="id" column="id" />
+		<result property="mediaName" column="mediaName" />
+		<result property="mediaCode" column="mediaCode" />
+		<result property="unionLv1" column="unionLv1" />
+		<result property="unionLv2" column="unionLv2" />
+		<result property="unionLv3" column="unionLv3" />
+		<result property="type" column="type" />
+	</resultMap>
+</sqlMap>

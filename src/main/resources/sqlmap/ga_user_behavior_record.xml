@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ec-ga">
+	<!-- 插入用户行为数据父表 -->
+	<insert id="saveUBD" parameterClass="com.j1.ec.tracker.entity.PageView">
+		insert into ga_user_behavior_record
+		(
+		 id,
+		 buttonPosition,  
+		 ip,  
+		 sessionId,  
+		 productId, 
+		 extField,  
+		 pageTypeId,  
+		 pageValue,  
+		 endUserId,  
+		 clientType, 
+		 clientTime,  
+		 newUserFlag, 
+		 userurgent
+		) values (#id#,#buttonPosition#,#ip#,#sessionId#,#productId#,#extField#,#pageTypeId#,  
+		 #pageValue#,#endUserId#,#clientType#,#clientTime#,#newUserFlag#,#userurgent#)
+	</insert>
+</sqlMap>

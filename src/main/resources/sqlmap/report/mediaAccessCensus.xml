@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ec-ga-report">
+	<typeAlias alias="mediaAccessCensus" type="com.j1.ec.report.entity.MediaAccessCensus" />
+
+	<resultMap class="mediaAccessCensus" id="mediaAccessCensusResult">
+		<result property="id" column="id" />
+		<result property="unionLv1" column="unionLv1" />
+		<result property="pv" column="pv" />
+		<result property="uv" column="uv" />
+		<result property="orderPv" column="orderPv" />
+		<result property="secondClickCount" column="secondClickCount" />
+		<result property="accessDepth" column="accessDepth" />
+		<result property="date" column="date" />
+	</resultMap>
+	<!-- 插入用户行为数据父表 -->
+	<select id="getMediaAccessCensus" parameterClass="java.util.HashMap"
+		resultMap="mediaAccessCensusResult">
+		select id, unionLv1, pv, uv, orderPv, secondClickCount,
+		accessDepth, date
+		from GA_MEDIA_ACCESS_CENSUS
+		where 1=1 
+		<isNotNull property="date_start">  
+			and date >= #date_start#
+        </isNotNull> 
+        <isNotNull property="date_end">  
+        	<![CDATA[ and date <= #date_end#  ]]>
+        </isNotNull>  
+	</select>
+</sqlMap>
