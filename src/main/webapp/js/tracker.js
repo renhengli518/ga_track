@@ -1,3 +1,9 @@
+/**
+ * @author renhengli
+ * @version 1.0
+ * @description being using for other project to get anlysis data.
+ * @date 2016-08-31 
+ */
 var pageUrl ;
 var country,province,city;
 var begintime = new Date(); 
