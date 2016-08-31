@@ -115,4 +115,44 @@ public class ReportServiceImpl implements ReportService {
 		}
 		return result;
 	}
+	
+	public List<MediaTypeReportDto> getMediaAccessCensusByTime(String date){
+		List<MediaAccessCensus> mediaAccessCensuss =  this.mediaAccessCensusDao.getMediaAccessCensusByTime(date);
+		List<MediaTypeReportDto> result = new ArrayList<MediaTypeReportDto>();
+		Map<Integer, MediaTypeReportDto> logicMap = new HashMap<Integer, MediaTypeReportDto>();
+
+		for (MediaAccessCensus mediaAccessCensus : mediaAccessCensuss) {
+			String unionLv1 = mediaAccessCensus.getUnionLv1();
+			// 去除总计数据
+			if ("-1".equals(unionLv1)) {
+				continue;
+			}
+			Integer mediaType = mediaTypeMap.get(unionLv1);
+			// 取不到就是“其他”
+			if (mediaType == null || mediaType == 0) {
+				mediaType = 7;
+			}
+			MediaTypeReportDto reportDto = logicMap.get(mediaType);
+			if (reportDto == null) {
+				reportDto = new MediaTypeReportDto();
+				String mediaTypeName = mediaTypeNameMap.get(mediaType);
+				if (mediaTypeName == null) {
+					mediaTypeName = "未知";
+				}
+				reportDto.setMediaTypeName(mediaTypeName);
+				reportDto.setDate(mediaAccessCensus.getDate());
+				logicMap.put(mediaType, reportDto);
+			}
+			reportDto.setPv(reportDto.getPv() + mediaAccessCensus.getPv());
+			reportDto.setUv(reportDto.getUv() + mediaAccessCensus.getUv());
+			reportDto.setOrderPv(reportDto.getOrderPv() + mediaAccessCensus.getOrderPv());
+			reportDto.setSecondClickCount(reportDto.getSecondClickCount() + mediaAccessCensus.getSecondClickCount());
+			reportDto.setAccessDepth(reportDto.getAccessDepth() + mediaAccessCensus.getAccessDepth());
+		}
+		Set<Map.Entry<Integer, MediaTypeReportDto>> entryseSet = logicMap.entrySet();
+		for (Map.Entry<Integer, MediaTypeReportDto> entry : entryseSet) {
+			result.add(entry.getValue());
+		}
+		return result;
+	}
 }

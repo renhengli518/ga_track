@@ -36,17 +36,17 @@ if (developMode) {
 }
 
 // 按需加载
-require([ 'echarts'// ,
-// 'echarts/chart/line',
-// 'echarts/chart/bar',
-// 'echarts/chart/scatter',
-// 'echarts/chart/k',
-// 'echarts/chart/radar',
-// 'echarts/chart/force',
-// 'echarts/chart/chord',
-// 'echarts/chart/gauge',
-// 'echarts/chart/funnel',
-// 'echarts/chart/pie'
+require([ 'echarts' ,
+ 'echarts/chart/line',
+'echarts/chart/bar',
+'echarts/chart/scatter',
+'echarts/chart/k',
+ 'echarts/chart/radar',
+ 'echarts/chart/force',
+ 'echarts/chart/chord',
+ 'echarts/chart/gauge',
+ 'echarts/chart/funnel',
+ 'echarts/chart/pie'
 ], requireCallback);
 var mediaTypeCountPieChart;
 var mediaTypeOrderCountBarChart;
@@ -58,7 +58,7 @@ function requireCallback(ec) {
 option = {
 	title : {
 		text : '外部流量汇总',
-		subtext : '健一网',
+		subtext : '宜泉资本',
 		x : 'center'
 	},
 	tooltip : {
@@ -76,7 +76,7 @@ option = {
 option2 = {
 	title : {
 		text : '外部流量订单数',
-		subtext : '健一网',
+		subtext : '宜泉资本',
 		x : 'center'
 	},
 	legend : {
@@ -166,11 +166,13 @@ function routePath() {
 }
 
 function loadOrgData(reportType, reportDate, referDate, dataType) {
+	console.log(urlPrefix.ga + "/mvc/" + dataType + "/" + reportType + '/' + reportDate + '/' + referDate);
 	$.ajax({
 		url : urlPrefix.ga + "/mvc/" + dataType + "/" + reportType + '/' + reportDate + '/' + referDate,
 		type : 'GET',
 		dataType : 'html'
 	}).done(function(data, status, xhr) {
+		//debugger;
 		$("#reportUI_orgData").html(data);
 	});
 }
@@ -258,6 +260,8 @@ function loadChartData(reportType, reportDate, referDate, dataType) {
 }
 
 function reportRefresh() {
+	console.log("#" + $("#reportType").val() + "/" + $("#txt_reportDate").val() + "/"
+			+ $("#txt_referDate").val() + "/" + $("#dataType").val());
 	app.runRoute("get", "#" + $("#reportType").val() + "/" + $("#txt_reportDate").val() + "/"
 			+ $("#txt_referDate").val() + "/" + $("#dataType").val());
 }

@@ -6,4 +6,6 @@ import com.j1.ec.report.entity.MediaAccessCensus;
 
 public interface MediaAccessCensusDao {
 	List<MediaAccessCensus> getMediaAccessCensus(String startdate,String endDate) throws Exception;
+	
+	List<MediaAccessCensus> getMediaAccessCensusByTime(String date);
 }

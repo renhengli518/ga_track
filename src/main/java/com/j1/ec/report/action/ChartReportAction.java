@@ -47,8 +47,10 @@ public class ChartReportAction {
 		}
 
 		Map<String, List<MediaTypeReportDto>> result = new HashMap<String, List<MediaTypeReportDto>>();
-		List<MediaTypeReportDto> reportData = reportService.getDailyMediaReportGroupByMediaType(reportDate,referDate);
-		List<MediaTypeReportDto> referData = reportService.getDailyMediaReportGroupByMediaType(referDate,referDate);
+		//List<MediaTypeReportDto> reportData = reportService.getDailyMediaReportGroupByMediaType(reportDate,referDate);
+		//List<MediaTypeReportDto> referData = reportService.getDailyMediaReportGroupByMediaType(referDate,referDate);
+		List<MediaTypeReportDto> reportData = reportService.getMediaAccessCensusByTime(reportDate);
+		List<MediaTypeReportDto> referData = reportService.getMediaAccessCensusByTime(referDate);
 		result.put("reportData", reportData);
 		result.put("referData", referData);
 

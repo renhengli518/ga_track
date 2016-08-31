@@ -1,24 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
 <sqlMap namespace="ec-ga">
+	<typeAlias alias="pageView" type="com.j1.ec.tracker.entity.PageView" />
+
+	<resultMap class="pageView" id="mediaAccessCensusResult">
+		<result property="id" column="id" />
+		<result property="buttonPosition" column="buttonPosition" />
+		<result property="linkPosition" column="linkPosition" />
+		<result property="viewType" column="viewType" />
+		<result property="ip" column="ip" />
+		<result property="sessionId" column="sessionId" />
+		<result property="endUserId" column="endUserId" />
+		<result property="clientTime" column="clientTime" />
+		<result property="newUserFlag" column="newUserFlag" />
+		<result property="userurgent" column="userurgent" />
+		<result property="pageUrl" column="pageUrl" />
+		<result property="country" column="country" />
+		<result property="province" column="province" />
+		<result property="city" column="city" />
+		<result property="stayTime" column="stayTime" />
+		<result property="stayTimeMilSeconds" column="stayTimeMilSeconds" />
+		<result property="pageTitle" column="pageTitle" />
+		<result property="refferPage" column="refferPage" />
+		<result property="clientSystem" column="clientSystem" />
+		<result property="clientResolution" column="clientResolution" />
+		<result property="clientPageType" column="clientPageType" />
+	</resultMap>
 	<!-- 插入用户行为数据父表 -->
 	<insert id="saveUBD" parameterClass="com.j1.ec.tracker.entity.PageView">
-		insert into ga_user_behavior_record
+		insert into
+		ga_user_behavior_record
 		(
-		 id,
-		 buttonPosition,  
-		 ip,  
-		 sessionId,  
-		 productId, 
-		 extField,  
-		 pageTypeId,  
-		 pageValue,  
-		 endUserId,  
-		 clientType, 
-		 clientTime,  
-		 newUserFlag, 
-		 userurgent
-		) values (#id#,#buttonPosition#,#ip#,#sessionId#,#productId#,#extField#,#pageTypeId#,  
-		 #pageValue#,#endUserId#,#clientType#,#clientTime#,#newUserFlag#,#userurgent#)
+		id,
+		buttonPosition,
+		linkPosition,
+		viewType,
+		ip,
+		sessionId,
+		endUserId,
+		clientTime,
+		newUserFlag,
+		userurgent,
+		pageUrl,
+		country,
+		province,
+		city,
+		stayTime,
+		stayTimeMilSeconds,
+		pageTitle,
+		refferPage,
+		clientSystem,
+		clientResolution,
+		clientPageType
+		) values
+		(#id#,#buttonPosition#,#linkPosition#,#viewType#,#ip#,#sessionId#,#endUserId#,#clientTime#,#newUserFlag#,
+		#userurgent#,#pageUrl#,#country#,#province#,#city#,#stayTime#,#stayTimeMilSeconds#,#pageTitle#,#refferPage#
+		,#clientSystem#,#clientResolution#,#clientPageType#)
 	</insert>
+	
+	<select id="getUserBehaviorBySessionId" parameterClass="java.lang.String"
+		resultMap="mediaAccessCensusResult">
+		select *
+		from ga_user_behavior_record
+		where 1=1 
+		<isNotNull property="value">  
+			and sessionId = #value#
+        </isNotNull> 
+	</select>
 </sqlMap>

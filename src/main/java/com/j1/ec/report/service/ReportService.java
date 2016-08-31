@@ -9,4 +9,6 @@ public interface ReportService {
 	List<MediaAccessCensus> getDailyMediaReport(String startdate,String endDate) throws Exception;
 	
 	List<MediaTypeReportDto> getDailyMediaReportGroupByMediaType(String startdate,String endDate) throws Exception;
+	
+	List<MediaTypeReportDto> getMediaAccessCensusByTime(String date);
 }

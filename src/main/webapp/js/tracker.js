@@ -1,40 +1,119 @@
+var pageUrl ;
+var country,province,city;
+var begintime = new Date(); 
+var pageTitle ;
+var refferPage ;//网页来源地址
+var buttonPosition;
+var endUserId = "";
+var domain = document.domain;
+//var lastModified = document.lastModified;
+var urlPrefix = {ga: "http://192.168.1.96:7777"};
+
+$(function(){
+	//获取用户当前所在的地域信息
+	$.getScript('http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js', function(){
+	    console.log(remote_ip_info);
+	    var obj = remote_ip_info;
+	    country = obj.country;
+	    province = obj.province;
+	    city = obj.city;
+	});
+	pageUrl = window.location.href;
+	pageTitle = document.title;
+	refferPage = document.referrer;//网页来源地址
+	
+	//初始化数据埋点
+	//1.处理带input=button的元素
+	$(document).on("click","input[type='button']",function(){
+		buttonPosition = $(this).val();
+		gotracker(buttonPosition,'','buttonClick',endUserId,pageUrl,country,province,city,pageTitle,refferPage);
+	})
+	//处理a标签
+	$(document).on("click","a",function(){
+		var href = $(this).attr("href");
+		var text = $(this).text();
+		if(href && href != "" && href != null){
+			gotracker('',text,'a_link',endUserId,pageUrl,country,province,city,pageTitle,refferPage);
+		}
+	});
+//	setTimeout(function(){
+//		gotracker('','','pageView',endUserId,pageUrl,country,province,city,pageTitle,refferPage);
+//	},500);
+	
+});
+window.onunload = function(){
+	gotracker('','','pageView',endUserId,pageUrl,country,province,city,pageTitle,refferPage);
+}
+
 /** 用户行为记录 */
-function gotracker(productId, extField, pageCode, endUserId, newUserFlag,
-		browserToken, referer, pageAmount, pt, exPt) {// 行为记录调用函数
+function gotracker( buttonPosition,linkPosition,viewType, endUserId, 
+		 pageUrl, country,  province, city, pageTitle, refferPage) {// 行为记录调用函数
+	var endtime = new Date();
+	var waittime = endtime.getTime() - begintime.getTime();
+	var seconds = Math.round(waittime/1000);
+	var min = Math.floor(seconds/60);
+	var hours = Math.floor(min/60);
+	var seconds_1 =  seconds%60;
+	if(seconds_1 == 0){
+		seconds_1 = '00';
+	}else if(seconds_1 < 10){
+		seconds_1 = '0'+seconds_1;
+	}else{}
+	var min_1 =  min%60;
+	if(min_1 == 0){
+		min_1 = '00';
+	}else if(min_1 < 10){
+		min_1 = '0'+min_1;
+	}else{}
+	var hours_1 =  hours%60;
+	if(hours_1 == 0){
+		hours_1 = '00';
+	}else if(hours_1 < 10){
+		hours_1 = '0'+hours_1;
+	}else{}
+	var stayTime =  hours_1+":"+min_1+":"+seconds_1;
 	var w = new TrackerContainer("1");
-	if (productId) {// 产品ID
-		w.addParameter(new Parameter("productId", productId));
+	if (buttonPosition) {// 按钮名称
+		w.addParameter(new Parameter("buttonPosition", buttonPosition));
 	}
-	if (extField) {// 扩展参数
-		w.addParameter(new Parameter("extField", extField));
-	}
-	if (pageCode) {// 当前页面值
-		w.addParameter(new Parameter("pageCode", pageCode));
+	if (pageUrl) {// 网页地址
+		w.addParameter(new Parameter("pageUrl", pageUrl));
 	}
 	if (endUserId) {// 当前页面用户
 		w.addParameter(new Parameter("endUserId", endUserId));
 	}
-	if (newUserFlag == true || newUserFlag == false) {// 新用户标识(browserToken取)
-		w.addParameter(new Parameter("newUserFlag", newUserFlag));
+//	if (newUserFlag == true || newUserFlag == false) {// 新用户标识(browserToken取)
+//		w.addParameter(new Parameter("newUserFlag", newUserFlag));
+//	}
+//	if (browserToken) {// 客户唯一标识
+//		w.addParameter(new Parameter("browserToken", browserToken));
+//	}
+	if (country) {
+		w.addParameter(new Parameter("country", country));
 	}
-	if (browserToken) {// 客户唯一标识
-		w.addParameter(new Parameter("browserToken", browserToken));
+	if (province) {
+		w.addParameter(new Parameter("province", province));
 	}
-	if (referer) {// 来源(request取)
-		w.addParameter(new Parameter("referer", referer));
+	if (city) {
+		w.addParameter(new Parameter("city", city));
 	}
-	if (pageAmount) {// 页面产生金额
-		w.addParameter(new Parameter("pageAmount", pageAmount));
+	if (pageTitle) {// 页面title
+		w.addParameter(new Parameter("pageTitle", pageTitle));
 	}
-	if (pt) {// 当前页面token
-		w.addParameter(new Parameter("pt", pt));
+	if (linkPosition) {
+		w.addParameter(new Parameter("linkPosition", linkPosition));
 	}
-	if (exPt) {// 前一个页面token
-		w.addParameter(new Parameter("exPt", exPt));
+	if (viewType) {
+		w.addParameter(new Parameter("viewType", viewType));
+	}
+	if (refferPage) {// 网页来源
+		w.addParameter(new Parameter("refferPage", refferPage));
 	}
 	// 触发时间
 	w.addParameter(new Parameter("clientTime", new Date().getTime()));
-
+	w.addParameter(new Parameter("stayTime", stayTime));
+	w.addParameter(new Parameter("stayTimeMilSeconds", waittime));
+    console.log(w.toUrl());
 	sendImgUrl(w.toUrl());
 }
 function sendImgUrl(d) {// 发送用户行为记录请求
@@ -56,7 +135,7 @@ function Parameter(d, c) {// 添加参数
 }
 function TrackerContainer(e) {// 封装url
 	var f = (typeof urlPrefix != "undefined" && urlPrefix.tracker) ? urlPrefix.tracker
-			: "localhost:8080/ga_tracker";
+			: "192.168.1.96:7777";
 	this.url = ("https:" == document.location.protocol ? "https://" : "http://")
 			+ f + "/behavior.img?1=1";
 	this.url = addPublicParameter(this.url, e);
@@ -95,7 +174,7 @@ function TrackerContainer(e) {// 封装url
 			}
 		}
 		a += "}";
-		return this.url + a
+		return this.url + a;
 	}
 }
 function addPublicParameter(m, s) {// 添加公共参数
@@ -177,73 +256,87 @@ function trackerGetCookie(i) {
 	return null
 }
 var trackerSupportKey = new Object();
-trackerSupportKey.infoPageId = "w_pif";
-trackerSupportKey.tp = "w_tp";
-trackerSupportKey.tc = "w_tc";
-trackerSupportKey.guid = "guid";
-trackerSupportKey.attachedInfo = "b_ai";
-trackerSupportKey.tracker_u = "b_tu";
-trackerSupportKey.tracker_type = "b_trt";
-trackerSupportKey.ip = "u_ip";
-trackerSupportKey.infoTrackerSrc = "w_ts";
-trackerSupportKey.infoTrackerSrc = "w_ts";
-trackerSupportKey.cookie = "w_ck";
-trackerSupportKey.orderCode = "b_oc";
-trackerSupportKey.firstLink = "w_flk";
-trackerSupportKey.curMerchantId = "u_cm";
-trackerSupportKey.provinceId = "u_pid";
-trackerSupportKey.fee = "b_fee";
-trackerSupportKey.edmActivity = "b_ea";
-trackerSupportKey.edmEmail = "b_ee";
-trackerSupportKey.edmJobId = "b_ejb";
-trackerSupportKey.internalKeyword = "b_ik";
-trackerSupportKey.resultSum = "b_rs";
-trackerSupportKey.currentPage = "b_scp";
-trackerSupportKey.linkPosition = "b_lp";
-trackerSupportKey.adgroupKeywordID = "b_ak";
-trackerSupportKey.extField3 = "b_set";
-trackerSupportKey.extField6 = "b_adt";
-trackerSupportKey.extField7 = "b_pmi";
-trackerSupportKey.extField8 = "b_tid";
-trackerSupportKey.extField9 = "b_cid";
-trackerSupportKey.extField10 = "s_and";
-trackerSupportKey.unid = "w_un";
-trackerSupportKey.refPageTypeId = "w_rpt";
-trackerSupportKey.refUnid = "w_run";
-trackerSupportKey.refPageValue = "w_rpv";
-trackerSupportKey.eventId = "b_ei";
-trackerSupportKey.labelId = "b_li";
-trackerSupportKey.filterInfo = "b_fi";
-trackerSupportKey.activityId = "b_aci";
-trackerSupportKey.listCategoryId = "b_lci";
-trackerSupportKey.pmStatusTypeId = "b_pms";
-trackerSupportKey.container = "s_ct";
-trackerSupportKey.containerVersion = "s_ctv";
-trackerSupportKey.platVersion = "s_pv";
-trackerSupportKey.phoneType = "s_pt";
-trackerSupportKey.provider = "s_pro";
-trackerSupportKey.netType = "s_nt";
-trackerSupportKey.tpa = "w_tpa";
-trackerSupportKey.tpc = "w_tpc";
-trackerSupportKey.tpi = "w_tpi";
-trackerSupportKey.tcs = "w_tcs";
-trackerSupportKey.tcsa = "w_tca";
-trackerSupportKey.tcdt = "w_tct";
-trackerSupportKey.tcd = "w_tcd";
-trackerSupportKey.tci = "w_tci";
-trackerSupportKey.tce = "w_tce";
-trackerSupportKey.positionTypeId = "b_pyi";
-trackerSupportKey.scrollTop = "w_st";
-trackerSupportKey.abtestValue = "b_abv";
-trackerSupportKey.productId = "b_pid";// 产品ID
-trackerSupportKey.extField = "b_ext";
-trackerSupportKey.pageCode = "w_pv";// 页面ID
-trackerSupportKey.endUserId = "u_uid";
-trackerSupportKey.clientType = "c_type";
+trackerSupportKey.pageUrl = "pageUrl";
+trackerSupportKey.country = "country";
+trackerSupportKey.province = "province";
+trackerSupportKey.city = "city";
+trackerSupportKey.pageTitle = "title";
+trackerSupportKey.refferPage = "refferPage";
+trackerSupportKey.buttonPosition = "buttonPosition";
+trackerSupportKey.stayTime = "stayTime";
+trackerSupportKey.stayTimeMilSeconds = "stayTimeMilSeconds";
+trackerSupportKey.pageTitle = "pageTitle";
 trackerSupportKey.newUserFlag = "b_nu";// 新访客标识
 trackerSupportKey.clientTime = "b_clt";// 行为发生时间
-trackerSupportKey.browserToken = "b_btk";// 客户唯一标识
-trackerSupportKey.referer = "b_ref";// 来源
-trackerSupportKey.pageAmount = "u_amt";// 页面上金额
-trackerSupportKey.pt = "pt";// 页面上金额
-trackerSupportKey.exPt = "exPt";// 页面上金额
+trackerSupportKey.linkPosition = "linkPosition";
+trackerSupportKey.viewType = "viewType";
+
+//trackerSupportKey.infoPageId = "w_pif";
+//trackerSupportKey.tp = "w_tp";
+//trackerSupportKey.tc = "w_tc";
+//trackerSupportKey.guid = "guid";
+//trackerSupportKey.attachedInfo = "b_ai";
+//trackerSupportKey.tracker_u = "b_tu";
+//trackerSupportKey.tracker_type = "b_trt";
+//trackerSupportKey.ip = "u_ip";
+//trackerSupportKey.infoTrackerSrc = "w_ts";
+//trackerSupportKey.infoTrackerSrc = "w_ts";
+//trackerSupportKey.cookie = "w_ck";
+//trackerSupportKey.orderCode = "b_oc";
+//trackerSupportKey.firstLink = "w_flk";
+//trackerSupportKey.curMerchantId = "u_cm";
+//trackerSupportKey.provinceId = "u_pid";
+//trackerSupportKey.fee = "b_fee";
+//trackerSupportKey.edmActivity = "b_ea";
+//trackerSupportKey.edmEmail = "b_ee";
+//trackerSupportKey.edmJobId = "b_ejb";
+//trackerSupportKey.internalKeyword = "b_ik";
+//trackerSupportKey.resultSum = "b_rs";
+//trackerSupportKey.currentPage = "b_scp";
+//trackerSupportKey.linkPosition = "b_lp";
+//trackerSupportKey.adgroupKeywordID = "b_ak";
+//trackerSupportKey.extField3 = "b_set";
+//trackerSupportKey.extField6 = "b_adt";
+//trackerSupportKey.extField7 = "b_pmi";
+//trackerSupportKey.extField8 = "b_tid";
+//trackerSupportKey.extField9 = "b_cid";
+//trackerSupportKey.extField10 = "s_and";
+//trackerSupportKey.unid = "w_un";
+//trackerSupportKey.refPageTypeId = "w_rpt";
+//trackerSupportKey.refUnid = "w_run";
+//trackerSupportKey.refPageValue = "w_rpv";
+//trackerSupportKey.eventId = "b_ei";
+//trackerSupportKey.labelId = "b_li";
+//trackerSupportKey.filterInfo = "b_fi";
+//trackerSupportKey.activityId = "b_aci";
+//trackerSupportKey.listCategoryId = "b_lci";
+//trackerSupportKey.pmStatusTypeId = "b_pms";
+//trackerSupportKey.container = "s_ct";
+//trackerSupportKey.containerVersion = "s_ctv";
+//trackerSupportKey.platVersion = "s_pv";
+//trackerSupportKey.phoneType = "s_pt";
+//trackerSupportKey.provider = "s_pro";
+//trackerSupportKey.netType = "s_nt";
+//trackerSupportKey.tpa = "w_tpa";
+//trackerSupportKey.tpc = "w_tpc";
+//trackerSupportKey.tpi = "w_tpi";
+//trackerSupportKey.tcs = "w_tcs";
+//trackerSupportKey.tcsa = "w_tca";
+//trackerSupportKey.tcdt = "w_tct";
+//trackerSupportKey.tcd = "w_tcd";
+//trackerSupportKey.tci = "w_tci";
+//trackerSupportKey.tce = "w_tce";
+//trackerSupportKey.positionTypeId = "b_pyi";
+//trackerSupportKey.scrollTop = "w_st";
+//trackerSupportKey.abtestValue = "b_abv";
+//trackerSupportKey.productId = "b_pid";// 产品ID
+//trackerSupportKey.extField = "b_ext";
+//trackerSupportKey.pageCode = "w_pv";// 页面ID
+//trackerSupportKey.endUserId = "u_uid";
+//trackerSupportKey.clientType = "c_type";
+//trackerSupportKey.browserToken = "b_btk";// 客户唯一标识
+//trackerSupportKey.referer = "b_ref";// 来源
+//trackerSupportKey.pageAmount = "u_amt";// 页面上金额
+//trackerSupportKey.pt = "pt";// 页面上金额
+//trackerSupportKey.exPt = "exPt";// 页面上金额
+

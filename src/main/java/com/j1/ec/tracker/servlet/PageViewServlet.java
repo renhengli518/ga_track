@@ -4,6 +4,7 @@ import java.net.URLDecoder;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -48,7 +50,8 @@ public class PageViewServlet extends HttpServlet {
 			while (params.hasMoreElements()) {
 				String paramName = params.nextElement();
 				parameterMap.put(paramName, URLDecoder.decode(request.getParameter(paramName), "utf-8"));
-//				System.out.println(paramName + ":" + URLDecoder.decode(request.getParameter(paramName), "utf-8"));
+				// System.out.println(paramName + ":" +
+				// URLDecoder.decode(request.getParameter(paramName), "utf-8"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -57,6 +60,9 @@ public class PageViewServlet extends HttpServlet {
 		String sessionId = request.getSession().getId();
 		String ip = PageViewUtil.getIpAddr(request);// IP地址
 		ip = PageViewUtil.getStringInLength(ip, 32);
+		String clientSystem = parameterMap.get("s_plt");// 客户端系统
+		String clientResolution = parameterMap.get("s_rst");// 客户分辨率
+		String clientPageType = parameterMap.get("s_ct");// 客户端页面类型
 		String bd_str = parameterMap.get("bd");// 行为记录参数
 		Map<String, String> bd_map = new HashMap<String, String>();
 		if (bd_str != null && !"".equals(bd_str)) {
@@ -66,22 +72,35 @@ public class PageViewServlet extends HttpServlet {
 				bd_map.put(temp_str.split("\\=")[0], temp_str.split("=")[1]);
 			}
 		}
-		String buttonPosition = bd_map.get("b_bp");
-		String productId = bd_map.get("b_pid");
-		String extField = bd_map.get("b_ext");
-		String pageTypeId = bd_map.get("w_pt");
-		String pageValue = bd_map.get("w_pv");
+		String buttonPosition = bd_map.get("buttonPosition");
+		// String productId = bd_map.get("b_pid");
+		// String extField = bd_map.get("b_ext");
+		// String pageTypeId = bd_map.get("w_pt");
+		// String pageValue = bd_map.get("w_pv");
 		String endUserId = bd_map.get("u_uid");
-		String clientType = bd_map.get("c_type");
+		// String clientType = bd_map.get("c_type");
 		Date clientTime = new Date(Long.parseLong(bd_map.get("b_clt")));
-		String newUserFlag = bd_map.get("b_nu");
-
+		String pageUrl = bd_map.get("pageUrl");
+		String country = bd_map.get("country");
+		String province = bd_map.get("province");
+		String city = bd_map.get("city");
+		String stayTime = bd_map.get("stayTime");
+		Long stayTimeMilSeconds = Long.valueOf(bd_map.get("stayTimeMilSeconds"));
+		String pageTitle = bd_map.get("pageTitle");
+		String refferPage = bd_map.get("refferPage");
+		String linkPosition = bd_map.get("linkPosition");
+		String viewType = bd_map.get("viewType");
+		List<PageView> list = this.pageViewService.getUserBehaviorBySessionId(sessionId);
+		String newUserFlag = "YES";
+		if(CollectionUtils.isNotEmpty(list) && list.size()>0){
+			newUserFlag = "NO";
+		}
 		/**
 		 * 添加记录，写入MySQL
 		 */
-		PageView behaviorUser = new PageView(buttonPosition, ip, sessionId,
-				productId, extField, pageTypeId, pageValue, endUserId,
-				clientType, clientTime, newUserFlag, userurgent);
+		PageView behaviorUser = new PageView(buttonPosition, linkPosition, viewType, ip, sessionId, endUserId,
+				clientTime, newUserFlag, userurgent, pageUrl, country, province, city, stayTime, stayTimeMilSeconds,
+				pageTitle, refferPage, clientSystem, clientResolution, clientPageType);
 		this.pageViewService.savePageViewInfoToDB(behaviorUser);
 	}
 

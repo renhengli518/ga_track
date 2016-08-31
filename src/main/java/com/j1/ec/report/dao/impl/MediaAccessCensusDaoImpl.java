@@ -1,7 +1,6 @@
 package com.j1.ec.report.dao.impl;
 
 import java.sql.SQLException;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,5 +24,15 @@ public class MediaAccessCensusDaoImpl extends SqlMapClientDaoSupport implements 
 			throw new RuntimeException(e);
 		}
 	}
+	
+	@Override
+	public List<MediaAccessCensus> getMediaAccessCensusByTime(String date){
+		try {
+			return getSqlMapClient().queryForList("ec-ga-report.getMediaAccessCensusByTime", date);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 
 }

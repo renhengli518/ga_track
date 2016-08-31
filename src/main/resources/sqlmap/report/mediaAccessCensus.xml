@@ -13,7 +13,7 @@
 		<result property="accessDepth" column="accessDepth" />
 		<result property="date" column="date" />
 	</resultMap>
-	<!-- 插入用户行为数据父表 -->
+	<!-- 根据时间区间查询列表 -->
 	<select id="getMediaAccessCensus" parameterClass="java.util.HashMap"
 		resultMap="mediaAccessCensusResult">
 		select id, unionLv1, pv, uv, orderPv, secondClickCount,
@@ -26,5 +26,17 @@
         <isNotNull property="date_end">  
         	<![CDATA[ and date <= #date_end#  ]]>
         </isNotNull>  
+	</select>
+	
+	<!-- 根据时间值来查询 -->
+	<select id="getMediaAccessCensusByTime" parameterClass="java.lang.String"
+		resultMap="mediaAccessCensusResult">
+		select id, unionLv1, pv, uv, orderPv, secondClickCount,
+		accessDepth, date
+		from GA_MEDIA_ACCESS_CENSUS
+		where 1=1 
+		<isNotNull property="value">  
+			and date >= #value#
+        </isNotNull> 
 	</select>
 </sqlMap>

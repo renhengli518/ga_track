@@ -17,7 +17,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-<title>健一网报表系统</title>
+<title>资本报表系统</title>
 <meta http-equiv="pragma" content="no-cache">
 <meta http-equiv="cache-control" content="no-cache">
 <meta http-equiv="expires" content="0">
@@ -38,8 +38,8 @@
 
 
 <script type="text/javascript">
-	var urlPrefix = {ga: "http://localhost:8080/ga_tracker"};
-</script>
+	var urlPrefix = {ga: "http://192.168.1.96:7777"};
+</script> 
 </head>
 <body>
 	<input type="hidden" id="reportType" value="dailyReport"/>
@@ -57,6 +57,7 @@
 		<ul class="uk-subnav uk-subnav-pill">
 			<li><a href="#changeDataType/chart">图表</a></li>
 			<li><a href="#changeDataType/orgData">原始数据</a></li>
+			<li><a target="_blank" href="index.jsp">test</a></li>
 		</ul>
 	</div>
 	<div id="inputUI">
@@ -72,7 +73,7 @@
 			<div class="uk-form-icon">
 				<label class="uk-form-label" for="txt_referDate">对比日期</label>
 				<div class="uk-form-icon">
-					<i class="uk-icon-calendar"></i><input id="txt_referDate" type="text" value="<%=lastWeekTodayStr%>"
+					<i class="uk-icon-calendar"></i><input id="txt_referDate" type="text" value="<%=todayStr%>"
 						onFocus="WdatePicker({isShowClear:false,readOnly:true,maxDate:'%y-%M-%d'})" />
 				</div>
 			</div>

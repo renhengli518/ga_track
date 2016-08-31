@@ -1,6 +1,7 @@
 package com.j1.ec.tracker.dao.impl;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
@@ -10,9 +11,7 @@ import com.j1.ec.tracker.entity.PageView;
 
 /**
  * 用户行为dao接口实现类
- * 
- * @author 五味子
- * @version 2014/4/4
+ * @author renhengli
  */
 public class PageViewDaoImpl extends SqlMapClientDaoSupport implements
 		PageViewDao {
@@ -38,5 +37,16 @@ public class PageViewDaoImpl extends SqlMapClientDaoSupport implements
 			}
 		}
 		return 0l;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<PageView> getUserBehaviorBySessionId(String sessionId){
+		try {
+			return getSqlMapClient().queryForList("ec-ga.getUserBehaviorBySessionId", sessionId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			logger.error(e, e);
+			return null;
+		}
 	}
 }
