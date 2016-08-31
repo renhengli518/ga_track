@@ -1,6 +1,7 @@
 package com.j1.ec.tracker.servlet;
 
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -40,6 +42,7 @@ public class PageViewServlet extends HttpServlet {
 	 * @param response
 	 * @return
 	 */
+	@SuppressWarnings("deprecation")
 	public void doGet(HttpServletRequest request, HttpServletResponse response) {
 		/**
 		 * 获取封装参数
@@ -88,6 +91,8 @@ public class PageViewServlet extends HttpServlet {
 		Long stayTimeMilSeconds = Long.valueOf(bd_map.get("stayTimeMilSeconds"));
 		String pageTitle = bd_map.get("pageTitle");
 		String refferPage = bd_map.get("refferPage");
+		String fromWhere = bd_map.get("fromWhere");
+		String serachKeyWords = bd_map.get("serachKeyWords");
 		String linkPosition = bd_map.get("linkPosition");
 		String viewType = bd_map.get("viewType");
 		List<PageView> list = this.pageViewService.getUserBehaviorBySessionId(sessionId);
@@ -100,7 +105,7 @@ public class PageViewServlet extends HttpServlet {
 		 */
 		PageView behaviorUser = new PageView(buttonPosition, linkPosition, viewType, ip, sessionId, endUserId,
 				clientTime, newUserFlag, userurgent, pageUrl, country, province, city, stayTime, stayTimeMilSeconds,
-				pageTitle, refferPage, clientSystem, clientResolution, clientPageType);
+				pageTitle, refferPage, clientSystem, clientResolution, clientPageType, fromWhere, serachKeyWords);
 		this.pageViewService.savePageViewInfoToDB(behaviorUser);
 	}
 

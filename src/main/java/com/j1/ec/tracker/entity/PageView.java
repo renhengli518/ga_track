@@ -36,6 +36,8 @@ public class PageView implements Serializable {
 	private String clientSystem;// 客户端系统
 	private String clientResolution;// 客户端分辨率
 	private String clientPageType;// 客户端页面类型
+	private String fromWhere;//百度搜索，谷歌搜索，搜狗搜索，雅虎搜索，直接访问，外链
+	private String serachKeyWords;//搜索关键字
 
 	/**
 	 * 构造方法
@@ -78,7 +80,7 @@ public class PageView implements Serializable {
 	public PageView(String buttonPosition, String linkPosition, String viewType, String ip, String sessionId, String endUserId, Date clientTime,
 			String newUserFlag, String userurgent, String pageUrl, String country, String province, String city,
 			String stayTime, Long stayTimeMilSeconds, String pageTitle, String refferPage, String clientSystem,
-			String clientResolution, String clientPageType) {
+			String clientResolution, String clientPageType, String fromWhere, String serachKeyWords) {
 		super();
 		this.id = ID.getInstanse().getID(18);
 		this.buttonPosition = buttonPosition;
@@ -101,6 +103,8 @@ public class PageView implements Serializable {
 		this.clientSystem = clientSystem;
 		this.clientResolution = clientResolution;
 		this.clientPageType = clientPageType;
+		this.fromWhere = fromWhere;
+		this.serachKeyWords = serachKeyWords;
 	}
 
 }

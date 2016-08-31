@@ -25,6 +25,8 @@
 		<result property="clientSystem" column="clientSystem" />
 		<result property="clientResolution" column="clientResolution" />
 		<result property="clientPageType" column="clientPageType" />
+		<result property="fromWhere" column="fromWhere" />
+		<result property="serachKeyWords" column="serachKeyWords" />
 	</resultMap>
 	<!-- 插入用户行为数据父表 -->
 	<insert id="saveUBD" parameterClass="com.j1.ec.tracker.entity.PageView">
@@ -51,11 +53,13 @@
 		refferPage,
 		clientSystem,
 		clientResolution,
-		clientPageType
+		clientPageType,
+		fromWhere,
+		serachKeyWords
 		) values
 		(#id#,#buttonPosition#,#linkPosition#,#viewType#,#ip#,#sessionId#,#endUserId#,#clientTime#,#newUserFlag#,
 		#userurgent#,#pageUrl#,#country#,#province#,#city#,#stayTime#,#stayTimeMilSeconds#,#pageTitle#,#refferPage#
-		,#clientSystem#,#clientResolution#,#clientPageType#)
+		,#clientSystem#,#clientResolution#,#clientPageType#,#fromWhere#,#serachKeyWords#)
 	</insert>
 	
 	<select id="getUserBehaviorBySessionId" parameterClass="java.lang.String"

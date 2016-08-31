@@ -6,10 +6,91 @@ var refferPage ;//网页来源地址
 var buttonPosition;
 var endUserId = "";
 var domain = document.domain;
+var fromWhere="直接访问";
+var serachKeyWords="";
 //var lastModified = document.lastModified;
 var urlPrefix = {ga: "http://192.168.1.96:7777"};
-
 $(function(){
+	//预处理数据，分析网站来源
+	pageUrl = window.location.href;
+	pageTitle = document.title;
+	refferPage = document.refferPage;
+	var str1=""; 
+	var str2= ""; 
+	var grep=null; 
+	var str=null; 
+	var keyword=null; 
+	var skey="xx"; 
+	var ykey=""; 
+	//refferPage="https://www.sogou.com/web?query=iPhone7%E6%9B%9D%E5%85%89&_asf=www.sogou.com&from=index-nologin&_ast=&w=01015002&p=40040108&ie=utf8&oq=&ri=0&sourceid=sugg&suguuid=&sut=0&sst0=1472621418633&lkt=0%2C0%2C0&pid=sogou-wsse-af5baf594e9197b4-0001"; 
+	var sosuo=refferPage.split(".")[1]; 
+	switch (sosuo) {
+	case "baidu":
+		fromWhere = "百度搜索";
+		grep = /wd\=.*\&/i;
+		str = refer.match(grep)
+		keyword = str.toString().split("=")[1].split("&")[0];
+		console.log(decodeURIComponent(keyword));
+		ykey = decodeURIComponent(keyword);
+		addCookie('key', decodeURIComponent(keyword), 1);
+		//alert(decodeURIComponent(keyword));
+		break;
+	case "google":
+		fromWhere = "谷歌搜索";
+		grep = /&q\=.*\&/i;
+		str = refer.match(grep)
+		keyword = str.toString().split("&")[1].split("=")[1];
+		console.log(decodeURIComponent(keyword));
+		ykey = decodeURIComponent(keyword);
+		addCookie('key', decodeURIComponent(keyword), 1);
+		break;
+	case "sogou":
+		fromWhere = "搜狗搜索";
+		grep = /query\=.*\&/i;
+		str = refer.match(grep)
+		keyword = str.toString().split("&")[0].split("=")[1];
+		console.log(decodeURIComponent(keyword));
+		ykey = decodeURIComponent(keyword);
+		addCookie('key', decodeURIComponent(keyword), 1);
+		//alert(decodeURIComponent(keyword));
+		break;
+	default:
+		fromWhere = "直接访问";
+		addCookie('key', '', 1);
+	}
+	var ckey = (getCookie('key'))
+	//alert(ckey);
+	if (ykey.indexOf(skey) > -1) {
+	} else {
+	}
+	function deleteCookie(name) {
+		var date = new Date();
+		date.setTime(date.getTime() - 10000);
+		document.cookie = name + "=v; expires=" + date.toGMTString();
+	}
+	function getCookie(name) {
+		var strCookie = document.cookie;
+		var arrCookie = strCookie.split("; ");
+		for (var i = 0; i < arrCookie.length; i++) {
+			var arr = arrCookie[i].split("=");
+			if (arr[0] == name)
+				return arr[1];
+		}
+		return "";
+	}
+	function addCookie(name, value, expiresHours) {
+		var cookieString = name + "=" + escape(value);
+		// 判断是否设置过期时间
+		if (expiresHours > 0) {
+			var date = new Date();
+			date.setTime(date.getTime + expiresHours * 3600 * 1000);
+			cookieString = cookieString + "; expires=" + date.toGMTString();
+		}
+		document.cookie = cookieString;
+	}
+	serachKeyWords = ykey;
+	//document.write(ykey);
+	
 	//获取用户当前所在的地域信息
 	$.getScript('http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js', function(){
 	    console.log(remote_ip_info);
@@ -18,22 +99,20 @@ $(function(){
 	    province = obj.province;
 	    city = obj.city;
 	});
-	pageUrl = window.location.href;
-	pageTitle = document.title;
-	refferPage = document.referrer;//网页来源地址
+	
 	
 	//初始化数据埋点
 	//1.处理带input=button的元素
 	$(document).on("click","input[type='button']",function(){
 		buttonPosition = $(this).val();
-		gotracker(buttonPosition,'','buttonClick',endUserId,pageUrl,country,province,city,pageTitle,refferPage);
+		gotracker(buttonPosition,'','buttonClick',endUserId,pageUrl,country,province,city,pageTitle,refferPage,fromWhere,serachKeyWords);
 	})
 	//处理a标签
 	$(document).on("click","a",function(){
 		var href = $(this).attr("href");
 		var text = $(this).text();
 		if(href && href != "" && href != null){
-			gotracker('',text,'a_link',endUserId,pageUrl,country,province,city,pageTitle,refferPage);
+			gotracker('',text,'a_link',endUserId,pageUrl,country,province,city,pageTitle,refferPage,fromWhere,serachKeyWords);
 		}
 	});
 //	setTimeout(function(){
@@ -42,12 +121,14 @@ $(function(){
 	
 });
 window.onunload = function(){
-	gotracker('','','pageView',endUserId,pageUrl,country,province,city,pageTitle,refferPage);
+	gotracker('','','pageView',endUserId,pageUrl,country,province,city,pageTitle,refferPage,fromWhere,serachKeyWords);
 }
 
 /** 用户行为记录 */
 function gotracker( buttonPosition,linkPosition,viewType, endUserId, 
-		 pageUrl, country,  province, city, pageTitle, refferPage) {// 行为记录调用函数
+		 pageUrl, country,  province, city, pageTitle, refferPage,fromWhere,serachKeyWords) {// 行为记录调用函数
+	//首先判断是否是新访客
+	//TODO
 	var endtime = new Date();
 	var waittime = endtime.getTime() - begintime.getTime();
 	var seconds = Math.round(waittime/1000);
@@ -106,8 +187,14 @@ function gotracker( buttonPosition,linkPosition,viewType, endUserId,
 	if (viewType) {
 		w.addParameter(new Parameter("viewType", viewType));
 	}
-	if (refferPage) {// 网页来源
+	if (refferPage) {// 上一个浏览地址（网页来源url）
 		w.addParameter(new Parameter("refferPage", refferPage));
+	}
+	if (serachKeyWords) {// 搜索关键字
+		w.addParameter(new Parameter("serachKeyWords", serachKeyWords));
+	}
+	if (fromWhere) {// 网页来源
+		w.addParameter(new Parameter("fromWhere", fromWhere));
 	}
 	// 触发时间
 	w.addParameter(new Parameter("clientTime", new Date().getTime()));
@@ -120,7 +207,7 @@ function sendImgUrl(d) {// 发送用户行为记录请求
 	var c = "timg" + new Date().getTime();
 	window[c] = new Image(1, 1);
 	// alert(d);
-	window[c].src = d
+	window[c].src = d;
 };
 function Parameter(d, c) {// 添加参数
 	this.key = d;
@@ -270,6 +357,8 @@ trackerSupportKey.newUserFlag = "b_nu";// 新访客标识
 trackerSupportKey.clientTime = "b_clt";// 行为发生时间
 trackerSupportKey.linkPosition = "linkPosition";
 trackerSupportKey.viewType = "viewType";
+trackerSupportKey.serachKeyWords = "serachKeyWords";
+trackerSupportKey.fromWhere = "fromWhere";
 
 //trackerSupportKey.infoPageId = "w_pif";
 //trackerSupportKey.tp = "w_tp";
