@@ -17,12 +17,13 @@ public class PageView implements Serializable {
 	private static final long serialVersionUID = -6840359962079020848L;
 	private Long id;// 记录ID
 	private String buttonPosition;// 行为记录出发点名称（input type=button）
-	private String linkPosition;//行为记录出发点名称（a标签）
-	private String viewType;//"pageView","buttonClick","a_link"
+	private String linkPosition;// 行为记录出发点名称（a标签）
+	private String viewType;// "pageView","buttonClick","a_link"
 	private String ip;// 客户端ip地址
 	private String sessionId;// sessionid
 	private String endUserId;// 当前页面用户
 	private Date clientTime;// 触发时间
+	private String stringDate;// 字符串类型的（2016-08-31）日期
 	private String newUserFlag;// 新用户访问标识
 	private String userurgent;// 用户浏览器版本
 	private String pageUrl;// 访问页面地址
@@ -36,8 +37,8 @@ public class PageView implements Serializable {
 	private String clientSystem;// 客户端系统
 	private String clientResolution;// 客户端分辨率
 	private String clientPageType;// 客户端页面类型
-	private String fromWhere;//百度搜索，谷歌搜索，搜狗搜索，雅虎搜索，直接访问，外链
-	private String serachKeyWords;//搜索关键字
+	private String fromWhere;// 百度搜索，谷歌搜索，搜狗搜索，雅虎搜索，直接访问，外链
+	private String serachKeyWords;// 搜索关键字
 
 	/**
 	 * 构造方法
@@ -77,10 +78,11 @@ public class PageView implements Serializable {
 	 * @param pageTitle
 	 * @param refferPage
 	 */
-	public PageView(String buttonPosition, String linkPosition, String viewType, String ip, String sessionId, String endUserId, Date clientTime,
-			String newUserFlag, String userurgent, String pageUrl, String country, String province, String city,
-			String stayTime, Long stayTimeMilSeconds, String pageTitle, String refferPage, String clientSystem,
-			String clientResolution, String clientPageType, String fromWhere, String serachKeyWords) {
+	public PageView(String buttonPosition, String linkPosition, String viewType, String ip, String sessionId,
+			String endUserId, Date clientTime, String newUserFlag, String userurgent, String pageUrl, String country,
+			String province, String city, String stayTime, Long stayTimeMilSeconds, String pageTitle, String refferPage,
+			String clientSystem, String clientResolution, String clientPageType, String fromWhere,
+			String serachKeyWords, String stringDate) {
 		super();
 		this.id = ID.getInstanse().getID(18);
 		this.buttonPosition = buttonPosition;
@@ -105,6 +107,7 @@ public class PageView implements Serializable {
 		this.clientPageType = clientPageType;
 		this.fromWhere = fromWhere;
 		this.serachKeyWords = serachKeyWords;
+		this.stringDate = stringDate;
 	}
 
 }

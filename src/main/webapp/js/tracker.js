@@ -23,46 +23,48 @@ $(function(){
 	var skey="xx"; 
 	var ykey=""; 
 	//refferPage="https://www.sogou.com/web?query=iPhone7%E6%9B%9D%E5%85%89&_asf=www.sogou.com&from=index-nologin&_ast=&w=01015002&p=40040108&ie=utf8&oq=&ri=0&sourceid=sugg&suguuid=&sut=0&sst0=1472621418633&lkt=0%2C0%2C0&pid=sogou-wsse-af5baf594e9197b4-0001"; 
-	var sosuo=refferPage.split(".")[1]; 
-	switch (sosuo) {
-	case "baidu":
-		fromWhere = "百度搜索";
-		grep = /wd\=.*\&/i;
-		str = refer.match(grep)
-		keyword = str.toString().split("=")[1].split("&")[0];
-		console.log(decodeURIComponent(keyword));
-		ykey = decodeURIComponent(keyword);
-		addCookie('key', decodeURIComponent(keyword), 1);
-		//alert(decodeURIComponent(keyword));
-		break;
-	case "google":
-		fromWhere = "谷歌搜索";
-		grep = /&q\=.*\&/i;
-		str = refer.match(grep)
-		keyword = str.toString().split("&")[1].split("=")[1];
-		console.log(decodeURIComponent(keyword));
-		ykey = decodeURIComponent(keyword);
-		addCookie('key', decodeURIComponent(keyword), 1);
-		break;
-	case "sogou":
-		fromWhere = "搜狗搜索";
-		grep = /query\=.*\&/i;
-		str = refer.match(grep)
-		keyword = str.toString().split("&")[0].split("=")[1];
-		console.log(decodeURIComponent(keyword));
-		ykey = decodeURIComponent(keyword);
-		addCookie('key', decodeURIComponent(keyword), 1);
-		//alert(decodeURIComponent(keyword));
-		break;
-	default:
-		fromWhere = "直接访问";
-		addCookie('key', '', 1);
+	if(refferPage && refferPage != null && refferPage != ""){
+		var sosuo=refferPage.split(".")[1]; 
+		switch (sosuo) {
+		case "baidu":
+			fromWhere = "百度搜索";
+			grep = /wd\=.*\&/i;
+			str = refer.match(grep)
+			keyword = str.toString().split("=")[1].split("&")[0];
+			//console.log(decodeURIComponent(keyword));
+			ykey = decodeURIComponent(keyword);
+			addCookie('key', decodeURIComponent(keyword), 1);
+			//alert(decodeURIComponent(keyword));
+			break;
+		case "google":
+			fromWhere = "谷歌搜索";
+			grep = /&q\=.*\&/i;
+			str = refer.match(grep)
+			keyword = str.toString().split("&")[1].split("=")[1];
+			//console.log(decodeURIComponent(keyword));
+			ykey = decodeURIComponent(keyword);
+			addCookie('key', decodeURIComponent(keyword), 1);
+			break;
+		case "sogou":
+			fromWhere = "搜狗搜索";
+			grep = /query\=.*\&/i;
+			str = refer.match(grep)
+			keyword = str.toString().split("&")[0].split("=")[1];
+			//console.log(decodeURIComponent(keyword));
+			ykey = decodeURIComponent(keyword);
+			addCookie('key', decodeURIComponent(keyword), 1);
+			//alert(decodeURIComponent(keyword));
+			break;
+		default:
+			fromWhere = "直接访问";
+			addCookie('key', '', 1);
+		}
 	}
-	var ckey = (getCookie('key'))
+	//var ckey = (getCookie('key'))
 	//alert(ckey);
-	if (ykey.indexOf(skey) > -1) {
-	} else {
-	}
+	//if (ykey.indexOf(skey) > -1) {
+	//} else {
+	//}
 	function deleteCookie(name) {
 		var date = new Date();
 		date.setTime(date.getTime() - 10000);
@@ -93,7 +95,7 @@ $(function(){
 	
 	//获取用户当前所在的地域信息
 	$.getScript('http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js', function(){
-	    console.log(remote_ip_info);
+	    //console.log(remote_ip_info);
 	    var obj = remote_ip_info;
 	    country = obj.country;
 	    province = obj.province;
@@ -200,7 +202,7 @@ function gotracker( buttonPosition,linkPosition,viewType, endUserId,
 	w.addParameter(new Parameter("clientTime", new Date().getTime()));
 	w.addParameter(new Parameter("stayTime", stayTime));
 	w.addParameter(new Parameter("stayTimeMilSeconds", waittime));
-    console.log(w.toUrl());
+    //console.log(w.toUrl());
 	sendImgUrl(w.toUrl());
 }
 function sendImgUrl(d) {// 发送用户行为记录请求

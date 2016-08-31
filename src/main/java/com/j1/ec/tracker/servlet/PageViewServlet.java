@@ -1,7 +1,6 @@
 package com.j1.ec.tracker.servlet;
 
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -15,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -26,8 +25,7 @@ import com.j1.ec.tracker.util.PageViewUtil;
 /**
  * 网站用户行为数据收集action类
  * 
- * @author 五味子
- * @version 2014/4/4
+ * @author renhengli
  */
 public class PageViewServlet extends HttpServlet {
 
@@ -83,6 +81,7 @@ public class PageViewServlet extends HttpServlet {
 		String endUserId = bd_map.get("u_uid");
 		// String clientType = bd_map.get("c_type");
 		Date clientTime = new Date(Long.parseLong(bd_map.get("b_clt")));
+		String stringDate = DateFormatUtils.format(clientTime, "yyyy-MM-dd");
 		String pageUrl = bd_map.get("pageUrl");
 		String country = bd_map.get("country");
 		String province = bd_map.get("province");
@@ -97,7 +96,7 @@ public class PageViewServlet extends HttpServlet {
 		String viewType = bd_map.get("viewType");
 		List<PageView> list = this.pageViewService.getUserBehaviorBySessionId(sessionId);
 		String newUserFlag = "YES";
-		if(CollectionUtils.isNotEmpty(list) && list.size()>0){
+		if (CollectionUtils.isNotEmpty(list) && list.size() > 0) {
 			newUserFlag = "NO";
 		}
 		/**
@@ -105,7 +104,8 @@ public class PageViewServlet extends HttpServlet {
 		 */
 		PageView behaviorUser = new PageView(buttonPosition, linkPosition, viewType, ip, sessionId, endUserId,
 				clientTime, newUserFlag, userurgent, pageUrl, country, province, city, stayTime, stayTimeMilSeconds,
-				pageTitle, refferPage, clientSystem, clientResolution, clientPageType, fromWhere, serachKeyWords);
+				pageTitle, refferPage, clientSystem, clientResolution, clientPageType, fromWhere, serachKeyWords,
+				stringDate);
 		this.pageViewService.savePageViewInfoToDB(behaviorUser);
 	}
 
