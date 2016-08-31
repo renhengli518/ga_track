@@ -78,7 +78,7 @@ public class PageViewServlet extends HttpServlet {
 		// String extField = bd_map.get("b_ext");
 		// String pageTypeId = bd_map.get("w_pt");
 		// String pageValue = bd_map.get("w_pv");
-		String endUserId = bd_map.get("u_uid");
+		String endUserId = bd_map.get("endUserId");
 		// String clientType = bd_map.get("c_type");
 		Date clientTime = new Date(Long.parseLong(bd_map.get("b_clt")));
 		String stringDate = DateFormatUtils.format(clientTime, "yyyy-MM-dd");

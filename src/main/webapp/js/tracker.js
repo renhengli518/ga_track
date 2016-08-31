@@ -11,6 +11,10 @@ var serachKeyWords="";
 //var lastModified = document.lastModified;
 var urlPrefix = {ga: "http://192.168.1.96:7777"};
 $(function(){
+	//判断用户是否登录,需要在植入代码的页面定义全局变量，并获取登录的用户的userID
+	if(userId && userId != null && userId != ""){
+		endUserId = userId;
+	}
 	//预处理数据，分析网站来源
 	pageUrl = window.location.href;
 	pageTitle = document.title;
@@ -126,11 +130,11 @@ window.onunload = function(){
 	gotracker('','','pageView',endUserId,pageUrl,country,province,city,pageTitle,refferPage,fromWhere,serachKeyWords);
 }
 
+
 /** 用户行为记录 */
 function gotracker( buttonPosition,linkPosition,viewType, endUserId, 
 		 pageUrl, country,  province, city, pageTitle, refferPage,fromWhere,serachKeyWords) {// 行为记录调用函数
 	//首先判断是否是新访客
-	//TODO
 	var endtime = new Date();
 	var waittime = endtime.getTime() - begintime.getTime();
 	var seconds = Math.round(waittime/1000);
@@ -361,6 +365,7 @@ trackerSupportKey.linkPosition = "linkPosition";
 trackerSupportKey.viewType = "viewType";
 trackerSupportKey.serachKeyWords = "serachKeyWords";
 trackerSupportKey.fromWhere = "fromWhere";
+trackerSupportKey.endUserId = "endUserId";
 
 //trackerSupportKey.infoPageId = "w_pif";
 //trackerSupportKey.tp = "w_tp";
