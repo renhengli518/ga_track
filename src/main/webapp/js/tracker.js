@@ -24,7 +24,7 @@ $(function(){
 	//预处理数据，分析网站来源
 	pageUrl = window.location.href;
 	pageTitle = document.title;
-	refferPage = document.refferPage;
+	refferPage = document.referrer;
 	var str1=""; 
 	var str2= ""; 
 	var grep=null; 
