@@ -8,7 +8,6 @@
 
 <script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="<%=request.getContextPath() %>/js/tracker.js"></script>
-<script type="text/javascript"></script>
 </head>
 <body>
 <h2>TEST</h2>
@@ -16,4 +15,7 @@
 <input type="button"  value="测试"/>
 
 </body>
+<script type="text/javascript">
+	var userId = "";
+</script>
 </html>
